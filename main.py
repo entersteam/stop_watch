@@ -24,8 +24,8 @@ def making_button(img:np.ndarray, h, w, x=0.5,y=0.5):
 def sec_to_text(time):
     sec = int(time)
     sosu = str(time).split('.')[1]
-    sec = sec%60
     min = sec//60
+    sec = sec%60
     return "%02d:%02d.%s" % (min, sec, sosu[:3])
 
 def watch_start():
