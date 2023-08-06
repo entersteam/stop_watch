@@ -10,6 +10,7 @@ width = 400
 
 present_time = 0.0
 start_time = 0
+saved_time = 0
 
 def making_button(img:np.ndarray, h, w, x=0.5,y=0.5):
     shape = img.shape
@@ -33,26 +34,35 @@ def watch_start():
     start_time = time.time()
     play = True
     
-def watch_end():
-    global play
+def watch_stop():
+    global play, present_time, saved_time
+    saved_time = present_time
     play = False
+    
+def watch_reset():
+    global present_time, saved_time
+    saved_time = 0
+    present_time = 0.0
+    watch_stop()
 
 while True:
     if play:
-        present_time = time.time() - start_time
+        present_time = time.time() - start_time + saved_time
     else:
         pass
     scr = np.full((height,width,3), bg_color, dtype=np.uint8)
     cv2.putText(scr, sec_to_text(present_time), (50,100), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255 ), 3)
     
     cv2.imshow('stop_watch', scr)
-    command = cv2.waitKey(5)
-    if command & 0xFF == 32:
+    command = cv2.waitKey(5) & 0xFF
+    if command == 32:
         if play:
-            watch_end()
+            watch_stop()
         else:
             watch_start()
-    elif  command & 0xFF == 27:
+    elif command == 114 or command == 82:
+        watch_reset()
+    elif  command == 27:
         break
     
 cv2.destroyAllWindows()
