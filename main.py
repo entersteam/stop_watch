@@ -2,6 +2,11 @@ import time
 import cv2
 import numpy as np
 
+reset_key = 82
+reconding_key = 83
+exit_key = 27
+play_key = 32
+
 play = False
 
 bg_color = (203, 192, 255)
@@ -45,24 +50,29 @@ def watch_reset():
     present_time = 0.0
     watch_stop()
 
+def time_recording():
+    global present_time
+    print(sec_to_text(present_time))
+
 while True:
     if play:
         present_time = time.time() - start_time + saved_time
-    else:
-        pass
+        
     scr = np.full((height,width,3), bg_color, dtype=np.uint8)
     cv2.putText(scr, sec_to_text(present_time), (50,100), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 255 ), 3)
     
     cv2.imshow('stop_watch', scr)
     command = cv2.waitKey(5) & 0xFF
-    if command == 32:
+    if command == play_key:
         if play:
             watch_stop()
         else:
             watch_start()
-    elif command == 114 or command == 82:
+    elif command == reset_key+32 or command == reset_key:
         watch_reset()
-    elif  command == 27:
+    elif command == reconding_key or command == reconding_key+32:
+        time_recording()
+    elif  command == exit_key:
         break
     
 cv2.destroyAllWindows()
